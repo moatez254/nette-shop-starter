@@ -1,22 +1,45 @@
 name: CI (PHP)
+
 on: [push, pull_request]
+
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          coverage: none
           tools: composer:v2
+          coverage: none
           extensions: sqlite3, pdo_sqlite
-      - name: Install deps
+          ini-values: memory_limit=-1
+
+      - name: Verify extensions
+        run: |
+          php -v
+          php -m | grep -E 'sqlite|pdo' || true
+          if ! php -m | grep -qi 'pdo_sqlite'; then
+            echo "pdo_sqlite not loaded!"
+            php -m
+            exit 1
+          fi
+
+      - name: Composer install (no progress)
         run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
       - name: PHPUnit
         run: vendor/bin/phpunit -v
+
       - name: PHPStan
         run: vendor/bin/phpstan analyse app --level=max
+
       - name: PHPCS
         run: vendor/bin/phpcs --standard=PSR12 app
-
