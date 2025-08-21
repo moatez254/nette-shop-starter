@@ -1,0 +1,77 @@
+openapi: 3.0.3
+info:
+  title: Nette Shop Starter API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/products:
+    get:
+      summary: List products
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Product' }
+                  count: { type: integer, minimum: 0 }
+    post:
+      summary: Create product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductCreate' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  id: { type: integer }
+  /api/products/{id}:
+    get:
+      summary: Product detail
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { $ref: '#/components/schemas/Product' }
+        '404': { description: Not found }
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        price: { type: number, format: float }
+        sku: { type: string, nullable: true }
+      required: [id, name, price]
+    ProductCreate:
+      type: object
+      properties:
+        name: { type: string }
+        price: { type: number, format: float }
+        sku: { type: string, nullable: true }
+      required: [name, price]
