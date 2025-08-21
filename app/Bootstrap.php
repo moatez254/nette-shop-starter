@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App;
@@ -26,14 +27,13 @@ final class Bootstrap
 
         Dotenv::createImmutable($root)->safeLoad();
 
-         $configurator->defaultExtensions = [];
-
-         $configurator->addParameters([
+        $configurator->addParameters([
             'rootDir' => $root,
             'appDir'  => $root . '/app',
         ]);
 
         $configurator->addConfig($root . '/app/config/common.neon');
+
         return $configurator;
     }
 }
