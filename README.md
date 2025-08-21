@@ -1,16 +1,43 @@
 # Nette Shop Starter
 
-Minimal REST API with **Nette 3 + SQLite** (products), **Docker**, **PHPUnit**, **PHPStan**, and **CI**.
+[![CI](https://github.com/moatez254/nette-shop-starte/actions/workflows/ci-php.yml/badge.svg)](https://github.com/moatez254/nette-shop-starte/actions/workflows/ci-php.yml)
+[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-025E8C)](./.github/dependabot.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+Minimal REST API built with **Nette 3** and **SQLite** (products). Includes **Docker**, **PHPUnit**, **PHPStan**, and **GitHub Actions CI**.
+
+---
+
+## Features
+- Nette 3 app (presenters + DI) with clean structure
+- SQLite database with schema + seeds
+- REST endpoints for products
+- CI: PHPUnit, PHPStan (max), PHPCS (PSR-12)
+- OpenAPI spec for quick exploration
+
+---
 
 ## Endpoints
 - `GET /api/products` — list
 - `GET /api/products/{id}` — detail
-- `POST /api/products` — `{ "name": "...", "price": 9.99, "sku": "OPT" }`
+- `POST /api/products` — body: `{ "name": "Lamp", "price": 49, "sku": "LAMP-003" }`
 
-## Run (Docker)
+**OpenAPI:** import `openapi.yaml` into https://editor.swagger.io or open raw:  
+`https://raw.githubusercontent.com/moatez254/nette-shop-starte/main/openapi.yaml`
+
+---
+
+## Quick start (Local PHP server)
+
 ```bash
-docker compose build
-mkdir -p var && touch var/database.sqlite
-docker compose up -d
-docker compose exec app sh -lc "sqlite3 var/database.sqlite < db/schema.sql && sqlite3 var/database.sqlite < db/seeds.sql"
-open http://localhost:8080/api/products
+cp .env.example .env
+composer install
+
+# SQLite files
+mkdir -p var
+sqlite3 var/database.sqlite < db/schema.sql
+sqlite3 var/database.sqlite < db/seeds.sql
+
+# run
+php -S 0.0.0.0:8000 -t www
+# open http://localhost:8000/api/products
