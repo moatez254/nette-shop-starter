@@ -1,0 +1,30 @@
+name: Publish API Docs
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ "openapi.yaml", ".github/workflows/api-docs.yml" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ReDoc (static HTML)
+        run: |
+          npm i -g @redocly/cli
+          mkdir -p docs
+          redocly build-docs openapi.yaml -o docs/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir: ./docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force_orphan: true
