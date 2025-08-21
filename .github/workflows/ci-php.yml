@@ -1,35 +1,24 @@
 name: CI (PHP)
-
 on: [push, pull_request]
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           tools: composer:v2
           coverage: none
           extensions: sqlite3, pdo_sqlite
           ini-values: memory_limit=-1
-
       - name: Composer install
         run: composer install --no-interaction --prefer-dist --no-progress
-
       - name: Validate composer.json
         run: composer validate --strict
-
       - name: PHPUnit
-        run: vendor/bin/phpunit --verbose --colors=always
-
+        run: composer test
       - name: PHPStan
-        run: vendor/bin/phpstan analyse app --level=max
-
+        run: composer stan
       - name: PHPCS
-        run: vendor/bin/phpcs --standard=PSR12 app
+        run: composer lint
