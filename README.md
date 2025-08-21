@@ -3,6 +3,8 @@
 [![CI](https://github.com/moatez254/nette-shop-starte/actions/workflows/ci-php.yml/badge.svg)](https://github.com/moatez254/nette-shop-starte/actions/workflows/ci-php.yml)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-025E8C)](./.github/dependabot.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![API Docs](https://img.shields.io/badge/OpenAPI-docs-blue)](https://moatez254.github.io/nette-shop-starte/)
+
 
 Minimal REST API built with **Nette 3** and **SQLite** (products). Includes **Docker**, **PHPUnit**, **PHPStan**, and **GitHub Actions CI**.
 
