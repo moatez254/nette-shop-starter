@@ -7,9 +7,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: none
-      - run: composer install --no-interaction --prefer-dist
-      - run: vendor/bin/phpunit
-      - run: vendor/bin/phpstan analyse app --level=max
-      - run: vendor/bin/phpcs --standard=PSR12 app
+          tools: composer:v2
+          extensions: sqlite3, pdo_sqlite
+      - name: Install deps
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: PHPUnit
+        run: vendor/bin/phpunit -v
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse app --level=max
+      - name: PHPCS
+        run: vendor/bin/phpcs --standard=PSR12 app
+
