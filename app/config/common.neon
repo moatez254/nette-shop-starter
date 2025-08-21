@@ -1,0 +1,25 @@
+parameters:
+    db:
+        dsn: %env.DB_DSN%
+        user: %env.DB_USER%
+        pass: %env.DB_PASS%
+
+services:
+    database.connection:
+        factory: Nette\Database\Connection(%db.dsn%, %db.user%, %db.pass%)
+
+    database.explorer:
+        factory: Nette\Database\Explorer(@database.connection, new Nette\Database\Structure(@database.connection), new Nette\Caching\Storages\DevNullStorage)
+
+    - App\Model\ProductRepository(@database.explorer)
+
+    - App\Presenters\ApiPresenter
+
+    # Add router factory
+    - App\Router\RouterFactory
+
+# Application configuration
+application:
+    errorPresenter: Error
+    mapping:
+        *: App\Presenters\*Presenter

@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: dev
+      DB_DSN: "sqlite:/var/www/html/var/database.sqlite"
+      DB_USER: ""
+      DB_PASS: ""
+    volumes:
+      - ./:/var/www/html
