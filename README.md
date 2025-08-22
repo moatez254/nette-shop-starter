@@ -168,6 +168,13 @@ The project includes a comprehensive GitHub Actions workflow:
 
 ## 📖 API Documentation
 
+### 📚 Live Documentation
+- **Interactive API Docs**: https://moatez254.github.io/nette-shop-starter/ (auto-deployed)
+- **OpenAPI Specification**: https://moatez254.github.io/nette-shop-starter/openapi.yaml
+
+### 🔧 Setup GitHub Pages
+To enable automatic API documentation deployment, follow the guide: [`GITHUB_PAGES_SETUP.md`](./GITHUB_PAGES_SETUP.md)
+
 ### OpenAPI Specification
 - **File**: `openapi.yaml`
 - **View Online**: Import into [Swagger Editor](https://editor.swagger.io/)
