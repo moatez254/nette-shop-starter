@@ -19,11 +19,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-22.04]
         php-version: ['8.2', '8.3']
-        dependency-version: [prefer-stable]
-        include:
-          - php-version: '8.3'
-            os: ubuntu-latest
-            dependency-version: prefer-stable
 
     steps:
       - name: Checkout code
@@ -58,7 +53,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer install --${{ matrix.dependency-version }} --no-interaction --no-progress --prefer-dist
+        run: composer install --prefer-stable --no-interaction --no-progress --prefer-dist
 
       - name: Create necessary directories
         run: |
