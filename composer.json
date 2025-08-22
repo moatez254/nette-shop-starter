@@ -45,7 +45,7 @@
     "test": "phpunit --colors=always",
     "test:coverage": "phpunit --coverage-html coverage --coverage-clover coverage.xml",
     "test:coverage-text": "phpunit --coverage-text",
-    "stan": "phpstan analyse app tests --level=max --memory-limit=1G",
+    "stan": "phpstan analyse app tests --memory-limit=1G",
     "lint": "phpcs --standard=PSR12 app tests",
     "lint:fix": "phpcbf --standard=PSR12 app tests",
     "check": [

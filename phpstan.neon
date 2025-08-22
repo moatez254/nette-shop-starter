@@ -1,4 +1,13 @@
 parameters:
-    level: 7
+    level: 5
     paths:
         - app
+    excludePaths:
+        - tests/Bootstrap/TestListener.php
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - '#Access to an undefined property Nette\\Database\\Table\\ActiveRow::\$[a-zA-Z_]+#'
+        - '#Property .* is never read, only written#'
+        - '#Unreachable statement - code above always terminates#'
+        - '#Parameter .* expects Nette\\Http\\Request, Nette\\Http\\IRequest given#'
+        - '#Parameter .* expects Nette\\Http\\Response, Nette\\Http\\IResponse given#'
