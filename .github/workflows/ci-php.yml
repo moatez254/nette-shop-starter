@@ -90,7 +90,7 @@ jobs:
         run: |
           php -S localhost:8000 -t www &
           sleep 5
-          curl -f http://localhost:8000/api/health || exit 1
+          curl -f http://localhost:8000/health.php || exit 1
 
   security:
     name: Security Check

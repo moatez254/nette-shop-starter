@@ -5,7 +5,7 @@ parameters:
         pass: %env.DB_PASS%
 
 services:
-    # اتصال وقارئ قاعدة البيانات
+    # Database connection and explorer
     database.connection:
         factory: Nette\Database\Connection(%db.dsn%, %db.user%, %db.pass%)
 
@@ -16,12 +16,20 @@ services:
             new Nette\Caching\Storages\DevNullStorage
         )
 
+    # Repository layer
     - App\Model\ProductRepository(@database.explorer)
+
+    # Validation layer
+    - App\Validator\ProductValidator
+
+    # Service layer
+    - App\Service\ProductService
 
     # Presenters
     - App\Presenters\ApiPresenter
+    - App\Presenters\HealthPresenter
 
-    # 👈 الأهم: تسجيل الراوتر كخدمة اسمها router
+    # Router service
     router:
         factory: [App\Router\RouterFactory, create]
 
