@@ -15,7 +15,7 @@ final class RouterFactory
 
         // --- API Routes (most specific first) ---
         $router->addRoute('api/health', 'Api:health');                     // GET  /api/health
-        $router->addRoute('api/products', 'Api:products');                 // GET|POST /api/products  
+        $router->addRoute('api/products', 'Api:products');                 // GET|POST /api/products
         $router->addRoute('api/products/<id>', 'Api:product');             // GET /api/products/{id}
         $router->addRoute('api/_debug/db', 'Api:debugDb');                 // GET /api/_debug/db
 
