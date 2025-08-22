@@ -1,5 +1,8 @@
 <?php
+
 declare(strict_types=1);
+
+namespace Tests;
 
 use App\Model\ProductRepository;
 use Nette\Database\Connection;
