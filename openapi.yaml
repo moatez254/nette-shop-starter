@@ -1,77 +1,370 @@
 openapi: 3.0.3
 info:
   title: Nette Shop Starter API
+  description: Professional REST API built with Nette 3 framework for product management
   version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 servers:
   - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
 paths:
-  /api/products:
+  /api/health:
     get:
-      summary: List products
+      summary: Health check endpoint
+      description: Simple endpoint to verify API is running
+      tags:
+        - Health
       responses:
         '200':
-          description: OK
+          description: API is healthy
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success: { type: boolean }
+                  status: 
+                    type: string
+                    example: "ok"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-01-15T10:30:00Z"
+                  version:
+                    type: string
+                    example: "1.0.0"
+              example:
+                status: "ok"
+                timestamp: "2024-01-15T10:30:00Z"
+                version: "1.0.0"
+
+  /api/products:
+    get:
+      summary: List products with pagination and search
+      description: Retrieve a paginated list of products with optional search functionality
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+          example: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of items per page
+          example: 20
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Search query for product name or SKU
+          example: "lamp"
+      responses:
+        '200':
+          description: Products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                    example: true
                   data:
                     type: array
                     items: { $ref: '#/components/schemas/Product' }
-                  count: { type: integer, minimum: 0 }
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  count: 
+                    type: integer
+                    minimum: 0
+                    example: 15
+              example:
+                success: true
+                data:
+                  - id: 1
+                    name: "Desk Lamp"
+                    price: 49.99
+                    sku: "LAMP-001"
+                  - id: 2
+                    name: "Office Chair"
+                    price: 199.99
+                    sku: "CHAIR-001"
+                pagination:
+                  page: 1
+                  limit: 20
+                  total: 15
+                  pages: 1
+                count: 15
+        '400':
+          description: Bad request - invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Invalid page number"
+                code: 400
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                error: "Validation failed"
+                code: 422
+                details:
+                  page: "Page must be greater than 0"
+                  limit: "Limit must be between 1 and 100"
+
     post:
-      summary: Create product
+      summary: Create a new product
+      description: Add a new product to the system
+      tags:
+        - Products
       requestBody:
         required: true
         content:
           application/json:
             schema: { $ref: '#/components/schemas/ProductCreate' }
+            example:
+              name: "New Product"
+              price: 29.99
+              sku: "PROD-001"
       responses:
         '201':
-          description: Created
+          description: Product created successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success: { type: boolean }
-                  id: { type: integer }
+                  success: 
+                    type: boolean
+                    example: true
+                  id: 
+                    type: integer
+                    example: 3
+                  message:
+                    type: string
+                    example: "Product created successfully"
+              example:
+                success: true
+                id: 3
+                message: "Product created successfully"
+        '400':
+          description: Bad request - invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Invalid payload"
+                code: 400
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Authentication required"
+                code: 401
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                error: "Validation failed"
+                code: 422
+                details:
+                  name: "Name is required and cannot be empty"
+                  price: "Price must be a positive number"
+
   /api/products/{id}:
     get:
-      summary: Product detail
+      summary: Get product by ID
+      description: Retrieve detailed information about a specific product
+      tags:
+        - Products
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: integer }
+          schema: 
+            type: integer
+            minimum: 1
+          description: Product ID
+          example: 1
       responses:
         '200':
-          description: OK
+          description: Product retrieved successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success: { type: boolean }
+                  success: 
+                    type: boolean
+                    example: true
                   data: { $ref: '#/components/schemas/Product' }
-        '404': { description: Not found }
+              example:
+                success: true
+                data:
+                  id: 1
+                  name: "Desk Lamp"
+                  price: 49.99
+                  sku: "LAMP-001"
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Product not found"
+                code: 404
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                error: "Invalid product ID"
+                code: 422
 
 components:
   schemas:
     Product:
       type: object
       properties:
-        id: { type: integer }
-        name: { type: string }
-        price: { type: number, format: float }
-        sku: { type: string, nullable: true }
+        id: 
+          type: integer
+          example: 1
+        name: 
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "Desk Lamp"
+        price: 
+          type: number
+          format: float
+          minimum: 0
+          example: 49.99
+        sku: 
+          type: string
+          nullable: true
+          maxLength: 100
+          example: "LAMP-001"
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
       required: [id, name, price]
+
     ProductCreate:
       type: object
       properties:
-        name: { type: string }
-        price: { type: number, format: float }
-        sku: { type: string, nullable: true }
+        name: 
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Product name (required)
+          example: "New Product"
+        price: 
+          type: number
+          format: float
+          minimum: 0
+          description: Product price (required)
+          example: 29.99
+        sku: 
+          type: string
+          nullable: true
+          maxLength: 100
+          description: Stock keeping unit (optional)
+          example: "PROD-001"
       required: [name, price]
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          example: 1
+        limit:
+          type: integer
+          minimum: 1
+          example: 20
+        total:
+          type: integer
+          minimum: 0
+          example: 150
+        pages:
+          type: integer
+          minimum: 1
+          example: 8
+      required: [page, limit, total, pages]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Something went wrong"
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred
+          example: "2024-01-15T10:30:00Z"
+      required: [error, code]
+
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            details:
+              type: object
+              additionalProperties:
+                type: string
+              description: Field-specific validation errors
+              example:
+                name: "Name is required"
+                price: "Price must be positive"
+          required: [details]
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authentication
+
+security:
+  - BearerAuth: []
